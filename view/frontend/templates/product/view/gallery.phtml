@@ -1,0 +1,89 @@
+<?php
+    /**
+     * Product media data template
+     *
+     * @var $block \Magento\Catalog\Block\Product\View\Gallery
+     */
+
+    $galleryImages = $block->getGalleryImages();
+    $placeholder = $galleryImages->getFirstItem()->getLargeImageUrl();
+    $productName = $block->getProduct()->getName();
+?>
+<div class="gallery__placeholder js-gallery-placeholder">
+    <img src="<?php echo $placeholder; ?>" alt="<?php echo $block->escapeHtml($productName); ?>">
+</div>
+<div class="gallery">
+    <div class="gallery__items js-gallery">
+        <?php foreach ($galleryImages as $galleryImage) : ?>
+            <?php if ($galleryImage->getMediaType() === 'image') : ?>
+                <a class="gallery__item gallery__item--image" data-fancybox="group" href="<?php echo $galleryImage->getUrl(); ?>">
+                    <img data-lazy="<?php echo $galleryImage->getLargeImageUrl(); ?>" alt="<?php echo $block->escapeHtml($productName); ?>">
+                </a>
+            <?php else : ?>
+                <a class="gallery__item gallery__item--video" data-fancybox="group" href="<?php echo $galleryImage->getVideoUrl(); ?>">
+                    <?php echo preg_replace("/\s*[a-zA-Z\/\/:\.]*youtube.com\/watch\?v=([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i","<iframe width=\"100%\" height=\"420\" src=\"//www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe>", $galleryImage->getVideoUrl()); ?>
+                </a>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </div>
+
+    <div class="gallery__thumbnails js-gallery-thumbnails no--centermode">
+        <?php foreach ($galleryImages as $galleryImage) : ?>
+            <?php if ($galleryImage->getMediaType() === 'image') : ?>
+                <div>
+                    <img src="<?php echo $galleryImage->getSmallImageUrl(); ?>" alt="<?php echo $block->escapeHtml($productName); ?>">
+                </div>
+            <?php else : ?>
+                <div class="videothumb">
+                    <div class="inner">
+                        <svg class="icon-svg" viewBox="0 0 99 99" aria-hidden="true" focusable="false"><circle cx="49.5" cy="49.5" r="49.5"></circle><path fill="#FFFFFF" d="M69.5 52.6s-24.9 19.6-26.8 21c-2.4 1.9-6.7.5-6.7-3.2V28.3c0-3.9 4.3-5 6.7-3.2 0 0 24 18.9 26.8 21 2.3 1.7 1.8 5.1 0 6.5z"></path></svg>
+                        <span>Video</span>
+                    </div>
+                </div>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<script>
+    require(['jquery', 'slick', 'fancybox', 'domReady!'], function($, slick, fancybox){
+        $('.js-gallery').on('init', function(){
+            $('.js-gallery-placeholder').hide();
+        });
+
+        $('.js-gallery').slick({
+            lazyLoad: 'progressive',
+            rows: 0,
+            infinite: false,
+            speed: 300,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            arrows: true,
+            asNavFor: '.js-gallery-thumbnails',
+            nextArrow: '<a href="#" class="slick-next"></a>',
+            prevArrow: '<a href="#" class="slick-prev"></a>'
+        });
+
+        $('.js-gallery-thumbnails').slick({
+            infinite: false,
+            rows: 0,
+            speed: 300,
+            slidesToShow: 7,
+            asNavFor: '.js-gallery',
+            focusOnSelect: true,
+            variableWidth: true,
+            centerMode: true,
+            centerPadding: '0px',
+            arrows: false,
+            swipe: false
+        });
+
+        $('.js-gallery-thumbnails').on('beforeChange', function(event, slick, currentSlide, nextSlide) {
+            if (nextSlide < 4) {
+                $('.js-gallery-thumbnails').addClass('no--centermode');
+            } else {
+                $('.js-gallery-thumbnails').removeClass('no--centermode');
+            }
+        });
+    });
+</script>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Elgentos_Gallery::css/slick.css" />
+        <css src="Elgentos_Gallery::css/jquery.fancybox.min.css" />
+    </head>
+    <body>
+        <referenceBlock name="product.info.media.image">
+            <action method="setTemplate">
+                <argument name="template" xsi:type="string">Elgentos_Gallery::product/view/gallery.phtml</argument>
+            </action>
+        </referenceBlock>
+    </body>
+</page>
